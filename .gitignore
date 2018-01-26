@@ -1,0 +1,24 @@
+
+# Eclipse
+bin/
+.project
+.settings/
+.classpath
+
+# Maven
+target*/
+test-repo/
+
+# Scala IDE
+.cache*
+
+# Scalor plugin
+/.scalor/
+
+# Flatten plugin
+pom.xml.flatten
+
+# Node.js
+# Phantom.js
+/test-tool/
+/node_modules/
