@@ -4,15 +4,17 @@ import org.junit.runners.Suite
 import org.junit.runners.model.RunnerBuilder
 import org.junit.runner.Runner
 import org.junit.runner.notification.RunNotifier
+import org.junit.runner.notification.Failure
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
+
 import sbt.testing.Framework
 import sbt.testing.TaskDef
 import sbt.testing.SuiteSelector
 import sbt.testing.TestSelector
 import sbt.testing.EventHandler
 import sbt.testing.Event
-import org.junit.runner.notification.Failure
-import org.junit.runner.Description
-import org.junit.runners.model.Statement
+
 import scala.annotation.tailrec
 
 /**
@@ -20,7 +22,9 @@ import scala.annotation.tailrec
  *
  * Invoke JUnit tests inside JS-VM.
  */
-case class ScalaJS_Suite( klass : Class[ _ ], builder : RunnerBuilder ) extends Suite( klass, builder ) {
+case class ScalaJS_Suite( klaz : Class[ _ ], builder : RunnerBuilder ) extends Suite( klaz, builder ) {
+
+  println( "AAA " + klaz.getName )
 
   lazy val framework = Context.defaultFramework
 
@@ -46,6 +50,8 @@ case class ScalaJS_Suite( klass : Class[ _ ], builder : RunnerBuilder ) extends 
 
     val description = runner.getDescription()
 
+    println( "BBB " + description )
+
     try {
 
       notifier.fireTestStarted( description )
@@ -66,32 +72,9 @@ case class ScalaJS_Suite( klass : Class[ _ ], builder : RunnerBuilder ) extends 
 
       val taskList = runnerJS.tasks( taskDefs )
 
-      val handler = new EventHandler {
-        import sbt.testing.Status
-        def handle( event : Event ) = {
-          def fireIgnored() = {
-            notifier.fireTestIgnored( description )
-          }
-          def fireFailure() = {
-            val error =
-              if ( event.throwable.isDefined ) event.throwable.get
-              else new Exception()
-            notifier.fireTestFailure( new Failure( description, error ) )
-          }
-          event.status match {
-            case Status.Success  => // OK
-            case Status.Error    => fireFailure()
-            case Status.Failure  => fireFailure()
-            case Status.Skipped  => fireIgnored()
-            case Status.Ignored  => fireIgnored()
-            case Status.Canceled => ??? // TODO
-            case Status.Pending  => ??? // TODO
-            case _               => ??? // TODO
-          }
-        }
-      }
+      val handler = new BasicHandler( description, notifier )
 
-      val logger = SimpleLogger()
+      val logger = new BasicLogger()
 
       fireNestedStareted( description, notifier )
 

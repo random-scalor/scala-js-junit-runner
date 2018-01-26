@@ -7,7 +7,7 @@ import org.scalajs.core.tools.linker.ModuleKind
 import org.scalajs.core.tools.logging.ScalaConsoleLogger
 import org.scalajs.core.tools.io.WritableFileVirtualJSFile
 import org.scalajs.core.tools.io.IRFileCache
-import org.scalajs.core.tools.io.FileScalaJSIRContainer
+//import org.scalajs.core.tools.io.FileScalaJSIRContainer
 
 object Linker {
 
@@ -15,7 +15,7 @@ object Linker {
 
   def link( classpath : Seq[ File ], runtime : File ) : Unit = {
 
-    val collected = FileScalaJSIRContainer.fromClasspath( classpath )
+    val collected = IRFileCache.IRContainer.fromClasspath( classpath )
 
     val extracted = fileCache.cached( collected )
 
@@ -30,7 +30,7 @@ object Linker {
     val result = WritableFileVirtualJSFile( runtime )
 
     linker.link( extracted, Seq(), result, logger )
-    
+
   }
 
 }

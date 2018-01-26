@@ -9,7 +9,7 @@ import sbt.testing.Logger
 /**
  * A basic Logger for testing
  */
-case class SimpleLogger() extends Logger {
+class BasicLogger extends Logger {
 
   def ansiCodesSupported() : Boolean = false
 

@@ -2,7 +2,7 @@ package com.carrotgarden.sjs.junit
 
 import java.io.File
 import sbt.testing.Framework
-import org.scalajs.testadapter.TestAdapter
+import org.scalajs.testadapter.ScalaJSFramework
 
 class Cache {
 
@@ -24,7 +24,7 @@ class Cache {
     runtime
   }
 
-  lazy val tester : TestAdapter = {
+  lazy val tester : ScalaJSFramework = {
     println( "XXX tester" )
     runtime
     Context.cachedTester( config )
@@ -32,10 +32,7 @@ class Cache {
 
   lazy val framework : Framework = {
     println( "XXX framework" )
-    val names = List( List( config.framework ) )
-    val result = tester.loadFrameworks( names )
-    val framework = result( 0 ).get
-    framework
+    tester
   }
 
 }

@@ -15,10 +15,12 @@ import org.scalajs.core.tools.logging.Logger
 import org.scalajs.core.tools.logging.ScalaConsoleLogger
 import org.scalajs.jsenv.ConsoleJSConsole
 import org.scalajs.jsenv.JSConsole
-import org.scalajs.testadapter.TestAdapter
+import org.scalajs.testadapter.ScalaJSFramework
 
 import sbt.testing.Framework
 import java.security.MessageDigest
+import org.scalajs.core.tools.jsdep.ResolvedJSDependency
+import org.scalajs.core.tools.jsdep.ResolutionInfo
 
 /**
  * Testing session configuration.
@@ -59,11 +61,6 @@ class Context extends Reference {
     objectOutput.close
   }
 
-  //  val envCache = TrieMap[ EnvConf, ComJSEnv ]()
-  //  def cachedEnv( envConf : EnvConf ) : ComJSEnv = {
-  //    envCache.getOrElseUpdate( envConf, envConf.makeEnv() )
-  //  }
-
   def scriptList( config : Config ) : Seq[ VirtualJSFile ] = {
     import config._
     val webDir = new File( webConf.webjarsDir )
@@ -74,26 +71,35 @@ class Context extends Reference {
     webList ++ moduleList
   }
 
-  def makeTester( config : Config ) : TestAdapter = {
+  def scriptLibs( jsFiles : Seq[ VirtualJSFile ] ) : Seq[ ResolvedJSDependency ] = {
+    jsFiles.map { file => ResolvedJSDependency.minimal( file ) }
+  }
+
+  def makeTester( config : Config ) : ScalaJSFramework = {
+    import config.module
+
     val jsEnv = config.envConf.makeEnv()
     val jsFiles : Seq[ VirtualJSFile ] = scriptList( config )
     val logger : Logger = new ScalaConsoleLogger()
     val console : JSConsole = ConsoleJSConsole
-    import config.module._
-    val testConfig = TestAdapter.Config()
-      .withLogger( logger )
-      .withJSConsole( console )
-      .withModuleSettings( kind, name )
-    new TestAdapter(
-      jsEnv,
-      jsFiles,
-      testConfig
+
+    val jsLibs = scriptLibs( jsFiles )
+    val libEnv = jsEnv.loadLibs( jsLibs )
+
+    new ScalaJSFramework(
+      frameworkName    = config.framework,
+      libEnv           = libEnv,
+      moduleKind       = module.kind,
+      moduleIdentifier = module.name,
+      logger           = logger,
+      jsConsole        = console
     )
+
   }
 
-  val testerCache = TrieMap[ Config, TestAdapter ]()
+  val testerCache = TrieMap[ Config, ScalaJSFramework ]()
 
-  def cachedTester( config : Config ) : TestAdapter = {
+  def cachedTester( config : Config ) : ScalaJSFramework = {
     testerCache.getOrElseUpdate( config, makeTester( config ) )
   }
 
@@ -106,10 +112,7 @@ class Context extends Reference {
   }
 
   lazy val defaultFramework : Framework = {
-    val names = List( List( defaultConfig.framework ) )
-    val result = defaultTester.loadFrameworks( names )
-    val framework = result( 0 ).get
-    framework
+    defaultTester
   }
 
 }
