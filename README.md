@@ -1,1 +1,0 @@
-# scala-js-junit-runner
