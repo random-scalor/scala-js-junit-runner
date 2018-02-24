@@ -2,9 +2,9 @@
 set -e -u
 
 #
-# invoke integration test
+# format project sources
 #
 
 cd "${BASH_SOURCE%/*}/.."
 
-./mvnw.sh clean verify -B -V
+./mvnw.sh scalor:format -B

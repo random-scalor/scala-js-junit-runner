@@ -7,7 +7,7 @@ import org.junit.runners.BlockJUnit4ClassRunner
 
 /**
  * JUnit 4 block runner for Scala.js.
- * 
+ *
  * TODO
  */
 case class ScalaJS_Runner( testClass : Class[ _ ] ) extends BlockJUnit4ClassRunner( testClass ) {

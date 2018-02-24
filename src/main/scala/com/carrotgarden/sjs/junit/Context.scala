@@ -126,4 +126,4 @@ class Context extends Reference {
 
 }
 
-object Context extends Context  
+object Context extends Context

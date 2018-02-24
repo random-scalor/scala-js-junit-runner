@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform
 import org.junit.runner.RunWith
 
+import scala.collection.JavaConverters._
+
 @RunWith( classOf[ JUnitPlatform ] )
 class ClasserTest {
 
@@ -36,9 +38,9 @@ class ClasserTest {
   def locatorTest() : Unit = {
 
     val locator = new WebJarAssetLocator();
-    locator.getWebJars().forEach( //
-      ( key, value ) => println( s"webjar=$key version=$value" ) //
-    );
+    locator.getWebJars.asScala.foreach {
+      case ( key, value ) => println( s"webjar=$key version=$value" )
+    }
 
     // locator.getFullPathIndex.asScala.foreach {
     // case ( key, value ) => println( s"token=${key} entry=${value}" )
