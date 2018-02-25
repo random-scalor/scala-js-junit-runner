@@ -110,7 +110,9 @@ object JSEnv {
         val builder = new ProcessBuilder( argsList : _* )
         builder.environment().clear()
         for ( ( name, value ) <- envVars ) builder.environment().put( name, value )
-        logger.info( runnerReport( executable, envArgs, envVars, libs, code ) )
+        logger.info( runnerReport(
+          RunnerContext( runnerType, executable, envArgs, envVars, libs.map( _.lib.path ), code.path )
+        ) )
         builder.start()
       }
     }
@@ -150,7 +152,9 @@ object JSEnv {
         val builder = new ProcessBuilder( argsList : _* )
         builder.environment().clear()
         for ( ( name, value ) <- envVars ) builder.environment().put( name, value )
-        logger.info( runnerReport( executable, envArgs, envVars, libs, code ) )
+        logger.info( runnerReport(
+          RunnerContext( runnerType, executable, envArgs, envVars, libs.map( _.lib.path ), code.path )
+        ) )
         builder.start()
       }
     }
@@ -190,7 +194,9 @@ object JSEnv {
         val builder = new ProcessBuilder( argsList : _* )
         builder.environment().clear()
         for ( ( name, value ) <- envVars ) builder.environment().put( name, value )
-        logger.info( runnerReport( executable, envArgs, envVars, libs, code ) )
+        logger.info( runnerReport(
+          RunnerContext( runnerType, executable, envArgs, envVars, libs.map( _.lib.path ), code.path )
+        ) )
         builder.start()
       }
     }
@@ -229,18 +235,25 @@ object JSEnv {
     else "UNKNOWN"
   }
 
-  def runnerReport(
-    envExec : String, envArgs : Seq[ String ], envVars : Map[ String, String ],
-    libs : Seq[ ResolvedJSDependency ], code : VirtualJSFile
-  ) : String = {
-    s"""
-JS-VM launch: ${runnerType} @ ${Thread.currentThread()}
-  exec: ${envExec}
-  args: ${envArgs.mkString( "; " )}
-  vars: ${envVars.map { case ( key, value ) => s"$key=$value" }.mkString( "; " )}
-  libs: ${libs.map( _.lib.path ).mkString( "; " )}
-  code: ${code.path}
-"""
+  case class RunnerContext(
+    mode : String,
+    exec : String,
+    args : Seq[ String ],
+    vars : Map[ String, String ],
+    libs : Seq[ String ],
+    code : String
+  )
+
+  object RunnerContext {
+    import upickle._
+    import upickle.default._
+    implicit def codecRunnerContext : ReadWriter[ RunnerContext ] = macroRW
+    def contextParse( context : String ) : RunnerContext = read[ RunnerContext ]( context )
+    def contextUnparse( context : RunnerContext ) : String = write( context, indent = 4 )
+  }
+
+  def runnerReport( context : RunnerContext ) : String = {
+    RunnerContext.contextUnparse( context )
   }
 
 }

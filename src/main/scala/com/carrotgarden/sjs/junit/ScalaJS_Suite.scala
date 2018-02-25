@@ -1,22 +1,16 @@
 package com.carrotgarden.sjs.junit
 
+import scala.collection.JavaConverters.asScalaBufferConverter
+
+import org.junit.runner.Description
+import org.junit.runner.Runner
+import org.junit.runner.notification.Failure
+import org.junit.runner.notification.RunNotifier
 import org.junit.runners.Suite
 import org.junit.runners.model.RunnerBuilder
-import org.junit.runner.Runner
-import org.junit.runner.notification.RunNotifier
-import org.junit.runner.notification.Failure
-import org.junit.runner.Description
-import org.junit.runners.model.Statement
 
-import sbt.testing.Framework
-import sbt.testing.TaskDef
 import sbt.testing.SuiteSelector
-import sbt.testing.TestSelector
-import sbt.testing.EventHandler
-import sbt.testing.Event
-
-import scala.annotation.tailrec
-import scala.collection.JavaConverters._
+import sbt.testing.TaskDef
 
 /**
  * JUnit 4 suite runner for Scala.js.

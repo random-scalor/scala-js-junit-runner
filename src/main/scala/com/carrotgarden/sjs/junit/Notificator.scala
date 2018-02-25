@@ -1,16 +1,16 @@
 package com.carrotgarden.sjs.junit
 
-import sbt.testing.EventHandler
-import sbt.testing.Event
-import sbt.testing.Status
+import scala.util.matching.Regex
 
-import org.junit.runner.notification.RunNotifier
 import org.junit.runner.Description
 import org.junit.runner.notification.Failure
+import org.junit.runner.notification.RunNotifier
+
+import sbt.testing.Event
+import sbt.testing.EventHandler
 import sbt.testing.NestedTestSelector
-import scala.collection.JavaConverters._
 import sbt.testing.Selector
-import scala.util.matching.Regex
+import sbt.testing.Status
 
 /**
  * Convert SBT testing events into JUnit notification events.

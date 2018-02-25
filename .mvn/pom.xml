@@ -2185,8 +2185,8 @@ version=${revision}
                 -->
                 <dependency>
                     <groupId>com.carrotgarden.sjs</groupId>
-                    <artifactId>scala-js-junit-tools</artifactId>
-                    <version>1.0.1.20180129202557</version>
+                    <artifactId>scala-js-junit-tools_${version.scala.epoch}</artifactId>
+                    <version>1.0.2.20180224031617</version>
                     <scope>test</scope>
                 </dependency>
                 <!-- Enable logging of JS-VM output from scala-js-junit-tools. -->

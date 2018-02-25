@@ -1,10 +1,14 @@
 package com.carrotgarden.sjs.junit
 
 import java.io.File
-import org.scalajs.jsenv.ComJSEnv
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+
 import org.scalajs.core.tools.linker.ModuleKind
 
-import Config._
+import Config.EnvConf
+import Config.Module
+import Config.WebConf
 
 /**
  * Scala.js JavaScript VM testing session configuration.
@@ -63,5 +67,32 @@ object Config {
     // serializable
     scriptList : Seq[ String ] = Seq()
   )
+
+  def charset = StandardCharsets.UTF_8
+
+  def configExtract( file : File ) : Config = {
+    val data = Files.readAllBytes( file.toPath )
+    val text = new String( data, charset )
+    configParse( text )
+  }
+
+  def configPersist( config : Config, file : File ) : Unit = {
+    import java.nio.file.StandardOpenOption._
+    val text = configUnparse( config )
+    val data = text.getBytes( charset )
+    Files.write( file.toPath, data, CREATE, SYNC )
+  }
+
+  import upickle._
+  import upickle.default._
+
+  implicit def codecConfig : ReadWriter[ Config ] = macroRW
+  implicit def codecEnvConf : ReadWriter[ EnvConf ] = macroRW
+  implicit def codecWebConf : ReadWriter[ WebConf ] = macroRW
+  implicit def codecModule : ReadWriter[ Module ] = macroRW
+  implicit def codecModuleKind : ReadWriter[ ModuleKind ] = macroRW
+
+  def configParse( config : String ) : Config = read[ Config ]( config )
+  def configUnparse( config : Config ) : String = write( config, indent = 4 )
 
 }

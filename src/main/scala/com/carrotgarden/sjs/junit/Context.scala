@@ -1,28 +1,17 @@
 package com.carrotgarden.sjs.junit
 
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
-import java.lang.management.ManagementFactory
 
 import scala.collection.concurrent.TrieMap
 
 import org.scalajs.core.tools.io.FileVirtualJSFile
 import org.scalajs.core.tools.io.VirtualJSFile
-import org.scalajs.core.tools.logging.Logger
-import org.scalajs.core.tools.logging.ScalaConsoleLogger
-import org.scalajs.jsenv.ConsoleJSConsole
-import org.scalajs.jsenv.JSConsole
+import org.scalajs.core.tools.jsdep.ResolvedJSDependency
+import org.scalajs.jsenv.ComJSEnv
+import org.scalajs.testadapter.TestAdapter
 
 import sbt.testing.Framework
-import java.security.MessageDigest
-import org.scalajs.core.tools.jsdep.ResolvedJSDependency
-import org.scalajs.core.tools.jsdep.ResolutionInfo
-import org.scalajs.jsenv.ComJSEnv
 import sbt.testing.Runner
-import org.scalajs.testadapter.TestAdapter
 
 /**
  * Testing session setup.
@@ -32,23 +21,18 @@ class Context extends Reference {
   def configLocation : File = {
     val location = new File( referenceLocation ).getAbsoluteFile
     val folder = location.getParentFile
-    folder.mkdirs()
+    if ( !folder.exists() ) {
+      folder.mkdirs()
+    }
     location
   }
 
   def configExtract() : Config = {
-    val fileInput = new FileInputStream( configLocation )
-    val objectInput = new ObjectInputStream( fileInput )
-    val config = objectInput.readObject.asInstanceOf[ Config ]
-    objectInput.close
-    config
+    Config.configExtract( configLocation )
   }
 
   def configPersist( config : Config ) : Unit = {
-    val fileOutput = new FileOutputStream( configLocation )
-    val objectOutput = new ObjectOutputStream( fileOutput )
-    objectOutput.writeObject( config )
-    objectOutput.close
+    Config.configPersist( config, configLocation )
   }
 
   def scriptList( config : Config ) : Seq[ VirtualJSFile ] = {

@@ -40,7 +40,7 @@
     <properties>
 
         <!-- Release series. -->
-        <release.epoch>1.0.2</release.epoch>
+        <release.epoch>1.1.0</release.epoch>
 
         <!-- Development releases repository. -->
         <bintray.subject>random-scalor</bintray.subject>
@@ -109,6 +109,12 @@
         <dependency>
             <groupId>com.typesafe</groupId>
             <artifactId>config</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.lihaoyi</groupId>
+            <artifactId>upickle_${version.scala.epoch}</artifactId>
+            <version>0.5.1</version>
         </dependency>
 
         <dependency>
