@@ -154,11 +154,13 @@ object Notificator {
     override def error( message : String ) : Unit = fireEvent( message )
     override def trace( error : Throwable ) : Unit = ()
 
+    lazy val referenceEvent = referenceJUnitEvent
+
     /**
      * Hack around Scala.js assumptions: recover started/finished events from logs.
      */
     def fireEvent( message : String ) : Unit = {
-      import referenceJUnitEvent._
+      import referenceEvent._
 
       if ( message == null ) {
         // NOOP

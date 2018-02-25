@@ -17,26 +17,28 @@ trait Reference {
   /**
    * Global name space.
    */
-  lazy val referenceLoad = {
+  def referenceLoad = {
     ConfigFactory.load( this.getClass.getClassLoader )
   }
 
   /**
    * Local name space.
    */
-  lazy val referenceConfig = {
+  def referenceConfig = {
     referenceLoad.getConfig( referenceKey )
   }
 
   /**
    * Location of serialized configuration.
    */
-  lazy val referenceLocation = referenceConfig.getString( "location" )
+  def referenceBaseDir = referenceConfig.getString( "basedir" )
+  def referenceBasePath = referenceConfig.getString( "basepath" )
+  def referenceLocation = referenceConfig.getString( "location" )
 
   /**
    * Origin of JUnit test started/finished events.
    */
-  lazy val referenceJUnitEvent = JUnitEvent( referenceConfig.getConfig( "junit-event" ) )
+  def referenceJUnitEvent = JUnitEvent( referenceConfig.getConfig( "junit-event" ) )
 
 }
 

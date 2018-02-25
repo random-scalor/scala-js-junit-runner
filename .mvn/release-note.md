@@ -1,4 +1,9 @@
 
+### 1.1.1
+
+#### Improvements
+* use location overrides
+
 ### 1.1.0
 
 #### Breaking change

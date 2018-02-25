@@ -48,7 +48,7 @@ case class ScalaJS_Suite( klaz : Class[ _ ], builder : RunnerBuilder )
    * Invoke worker class testing execution inside JS-VM.
    */
   override def runChild( runner : Runner, notifier : RunNotifier ) {
-    import referenceJUnitEvent._
+    import referenceEvent._
 
     // Trigger JS-VM launch on first run.
     val args = workerRunner.args
@@ -108,7 +108,10 @@ case class ScalaJS_Suite( klaz : Class[ _ ], builder : RunnerBuilder )
 }
 
 object ScalaJS_Suite extends Reference {
-  import referenceJUnitEvent._
+
+  lazy val referenceEvent = referenceJUnitEvent
+
+  import referenceEvent._
 
   /**
    * Hack around Scala.js JUnit provider not reporting per-method events.
