@@ -1,4 +1,9 @@
 
+### 1.1.2
+
+#### Bug fixes
+* java class version
+
 ### 1.1.1
 
 #### Improvements
